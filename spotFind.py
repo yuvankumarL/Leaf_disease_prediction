@@ -47,5 +47,7 @@ plt.subplot(1, 2, 2)
 plt.imshow(labels, cmap='nipy_spectral')
 plt.title(f"Spots Counted: {num_spots}")
 plt.show()
+plt.savefig("plt.png")
+
 
 print(f"Number of spots detected: {num_spots}")
