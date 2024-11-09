@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Load the image and convert it to HSV color space
-image = cv2.imread("pyfile/image_with_pink_background.png")
+image = cv2.imread("")
 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
 # Define color range for green (leaf color) in HSV space

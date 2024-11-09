@@ -1,10 +1,11 @@
 import cv2
 import numpy as np
+import webcolors
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 
 # Load the image
-image_path = "final/test/AppleCedarRust4.JPG"  # Adjust this if needed
+image_path = "PotatoEarlyBlight4.JPG"  # Replace with your image path
 image = cv2.imread(image_path)
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert from BGR to RGB
 
@@ -21,9 +22,24 @@ num_colors = 10
 kmeans = KMeans(n_clusters=num_colors)
 kmeans.fit(pixels)
 
-# Get the colors
+# Get the colors (centroids)
 colors = kmeans.cluster_centers_
-labels = kmeans.labels_
+
+# Function to find the closest color name
+def closest_color(requested_color):
+    min_colors = {}
+    for name, rgb in webcolors.CSS3_HEX_TO_NAMES.items():
+        r_c, g_c, b_c = webcolors.hex_to_rgb(rgb)
+        rd = (r_c - requested_color[0]) ** 2
+        gd = (g_c - requested_color[1]) ** 2
+        bd = (b_c - requested_color[2]) ** 2
+        min_colors[rd + gd + bd] = name
+    return min_colors[min(min_colors.keys())]
+
+# Print the dominant color names based on the RGB values
+for i, color in enumerate(colors):
+    color_name = closest_color(color)  # Find the closest color name
+    print(f"Color {i+1}: {color_name}, RGB: {color}")
 
 # Plot the colors as a bar chart
 def plot_colors(colors):
@@ -40,8 +56,6 @@ def plot_colors(colors):
     plt.imshow(rect)
     plt.title("Dominant Colors")
 
-# Plot the dominant colors
+# Plot and save the dominant colors
 plot_colors(colors)
-
-# Save the figure
-plt.savefig("colors.png")  # Use plt.savefig(), not plot_colors.savefig()
+plt.savefig("dominant_colors.png")  # Save the bar chart of the dominant colors

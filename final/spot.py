@@ -79,6 +79,7 @@ upper_green = np.array([85, 255, 255])
 
 # Create a mask based on the color range
 mask_green = cv2.inRange(hsv, lower_green, upper_green)
+cv2.imwrite("final/images/mask_green.png", mask_green)
 
 # Perform morphological operations to remove noise and fill gaps
 kernel = np.ones((5, 5), np.uint8)

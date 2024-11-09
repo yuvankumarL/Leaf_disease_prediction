@@ -1,7 +1,7 @@
 import cv2
 
 # Load the image
-image_path = "final/test/AppleCedarRust4.JPG"
+image_path = "final/iamges/ping.png"
 image = cv2.imread(image_path, cv2.IMREAD_COLOR)
 
 # Apply Bilateral Filter for noise reduction while keeping edges sharp
