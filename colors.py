@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 
 # Load the image
-image_path = "mark/chk5/result.png"  # Adjust this if needed
+image_path = "final/test/AppleCedarRust4.JPG"  # Adjust this if needed
 image = cv2.imread(image_path)
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert from BGR to RGB
 
@@ -15,7 +15,7 @@ image = cv2.resize(image, (256, 256))
 pixels = image.reshape(-1, 3)
 
 # Define the number of colors to identify
-num_colors = 5
+num_colors = 10
 
 # Use KMeans clustering to find the dominant colors
 kmeans = KMeans(n_clusters=num_colors)
