@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Load the image
-image_path = 'TomatoEarlyBlight3.JPG'
+image_path = 'PotatoEarlyBlight4.JPG'
 image = cv2.imread(image_path)
 
 # Convert to grayscale
@@ -33,13 +33,13 @@ plt.figure(figsize=(10, 10))
 plt.imshow(cv2.cvtColor(leaf_only, cv2.COLOR_BGR2RGB))
 plt.axis('off')
 plt.show()
-plt.savefig("tomato/seperated_spots.png")
+plt.savefig("mark/chk5/seperated_spots.png")
 
 
 # Refine the approach by using color segmentation to better capture the leaf region.
 
 # Convert to HSV color space for more precise color filtering
-image=cv2.imread("pink.png")
+image=cv2.imread("pink2.png")
 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
 # Define color range for green (leaf color) in HSV space
@@ -58,9 +58,12 @@ mask_cleaned = cv2.morphologyEx(mask_cleaned, cv2.MORPH_OPEN, kernel)
 # Bitwise-and to cut out the leaf with improved mask
 leaf_only_refined = cv2.bitwise_and(image, image, mask=mask_cleaned)
 
-# Display the refined result
-plt.figure(figsize=(10, 10))
-plt.imshow(cv2.cvtColor(leaf_only_refined, cv2.COLOR_BGR2RGB))
-plt.axis('off')
-plt.show()
-plt.savefig("tomato/pink_check1.png")
+# # Display the refined result
+# plt.figure(figsize=(10, 10))
+# plt.imshow(cv2.cvtColor(leaf_only_refined, cv2.COLOR_BGR2RGB))
+# plt.axis('off')
+# plt.show()
+# plt.savefig("mark/chk5/pink_check1.png")
+
+cv2.imwrite("mark/chk5/pink_check1.png", leaf_only_refined)
+

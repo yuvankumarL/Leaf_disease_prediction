@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 
 # Load the image
-image_path = "pink.png"  # Adjust this if needed
+image_path = "mark/chk5/result.png"  # Adjust this if needed
 image = cv2.imread(image_path)
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert from BGR to RGB
 

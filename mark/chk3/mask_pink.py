@@ -25,4 +25,4 @@ mask_cleaned = cv2.morphologyEx(mask_cleaned, cv2.MORPH_OPEN, kernel)
 mask_background = cv2.bitwise_not(mask_cleaned)
 
 # Save the mask_background as a PNG image with the same size as the original image
-cv2.imwrite("mark/chk3/mask_background.png", mask_background)
+cv2.imwrite("mark/chk3/mask_cleaned.png", mask_cleaned)
