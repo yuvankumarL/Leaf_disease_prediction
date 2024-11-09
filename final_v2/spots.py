@@ -175,3 +175,26 @@ output_path = 'final_v2/image_array_readable.txt'
 np.savetxt(output_path, image_array.reshape(-1, image_array.shape[-1]), fmt='%d', delimiter=", ", header="R, G, B")
 
 # output_path
+
+
+
+import pandas as pd
+
+# # Load the image
+# image_path = '/mnt/data/image.png'
+image = highlighted_image
+
+# Convert the image to HSV color space
+hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+# Reshape the HSV image array into a 2D array (each row is a pixel with H, S, V values)
+hsv_reshaped = hsv_image.reshape(-1, 3)
+
+# Create a DataFrame with columns for H, S, and V values
+hsv_df = pd.DataFrame(hsv_reshaped, columns=['H', 'S', 'V'])
+
+# Save to a CSV file
+output_path = 'final_v2/hsv_values.csv'
+hsv_df.to_csv(output_path, index=False)
+
+print(f"HSV values saved to {output_path}")
