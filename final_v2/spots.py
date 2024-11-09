@@ -145,3 +145,33 @@ highlighted_image[blue_mask > 0] = red_color  # Replace blue pixels with red
 
 # Save and display the result
 cv2.imwrite("final_v2/images/highlighted_blue_pixels.png", highlighted_image) 
+
+
+# from PIL import Image
+# import numpy as np
+
+# # Load the uploaded image to analyze
+# image_path = '/mnt/data/image.png'
+# image = Image.open(image_path)
+
+# Convert image to RGB array
+image_array = np.array(highlighted_image)
+
+# Define the target RGB value
+target_rgb = (0, 0, 255)
+
+# Count the number of pixels that match the target color
+matching_pixels = np.sum(np.all(image_array == target_rgb, axis=-1))
+
+print(f"matching_pixels: {matching_pixels}")
+
+# print(image_array)
+
+# Saving the image array as 'image_array.npy'
+file_path = 'final_v2/image_array.npy'
+np.save(file_path, image_array)
+
+output_path = 'final_v2/image_array_readable.txt'
+np.savetxt(output_path, image_array.reshape(-1, image_array.shape[-1]), fmt='%d', delimiter=", ", header="R, G, B")
+
+# output_path
