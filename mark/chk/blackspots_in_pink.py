@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Load the image
-image_path = 'PotatoEarlyBlight4.JPG'
+image_path = 'pink.png'
 image = cv2.imread(image_path)
 
 # Convert to HSV color space for more precise color filtering
@@ -32,23 +32,29 @@ if contours:
 
     # Bitwise-and to cut out the leaf with the final mask
     leaf_only_refined = cv2.bitwise_and(image, image, mask=mask_final)
-    
-    # Create a pink background
-    background_pink = np.full(image.shape, (255, 182, 193), dtype=np.uint8)  # Pink background
-
-    # Combine the pink background with the leaf-only image
-    pink_background_image = cv2.bitwise_and(background_pink, background_pink, mask=~mask_final)  # Pink outside leaf
-    pink_background_image = cv2.add(pink_background_image, leaf_only_refined)  # Add the leaf region
-
 else:
-    pink_background_image = image  # If no leaf found, use original image
+    leaf_only_refined = image  # In case no contours are found, keep the original image
 
-cv2.imwrite("pink2.png", pink_background_image)
+# Create a pink background
+background_pink = np.full(image.shape, (255, 182, 193), dtype=np.uint8)  # Pink background
 
-# # Display the result with pink background
-# plt.figure(figsize=(10, 10))
-# plt.imshow(cv2.cvtColor(pink_background_image, cv2.COLOR_BGR2RGB))
-# plt.axis('off')
-# plt.title("Leaf with Pink Background")
-# plt.show()
-# plt.savefig("pink.png")
+# Apply pink background outside the leaf area
+pink_background_image = cv2.bitwise_and(background_pink, background_pink, mask=~mask_final)  # Pink outside leaf
+pink_background_image = cv2.add(pink_background_image, leaf_only_refined)
+
+# Detect black spots within the leaf
+lower_black = np.array([0, 0, 0])
+upper_black = np.array([70, 70, 70])
+black_spots_mask = cv2.inRange(image, lower_black, upper_black)
+black_spots_within_leaf = cv2.bitwise_and(black_spots_mask, black_spots_mask, mask=mask_final)
+
+# Overlay black spots on the pink background image
+pink_background_image[black_spots_within_leaf > 0] = [0, 0, 0]  # Set black spot regions to black
+
+# Display the final result
+plt.figure(figsize=(10, 10))
+plt.imshow(cv2.cvtColor(pink_background_image, cv2.COLOR_BGR2RGB))
+plt.axis('off')
+plt.title("Leaf with Pink Background and Black Spots Inside")
+plt.show()
+plt.savefig("mark/chk/separate_spots.png")

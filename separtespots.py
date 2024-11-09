@@ -39,11 +39,13 @@ plt.savefig("tomato/seperated_spots.png")
 # Refine the approach by using color segmentation to better capture the leaf region.
 
 # Convert to HSV color space for more precise color filtering
+image=cv2.imread("pink.png")
 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
 # Define color range for green (leaf color) in HSV space
 lower_green = np.array([25, 40, 40])
 upper_green = np.array([85, 255, 255])
+# back_pink = np.array([255, 182, 193])
 
 # Create a mask based on the color range
 mask_green = cv2.inRange(hsv, lower_green, upper_green)
@@ -61,4 +63,4 @@ plt.figure(figsize=(10, 10))
 plt.imshow(cv2.cvtColor(leaf_only_refined, cv2.COLOR_BGR2RGB))
 plt.axis('off')
 plt.show()
-plt.savefig("tomato/check1.png")
+plt.savefig("tomato/pink_check1.png")

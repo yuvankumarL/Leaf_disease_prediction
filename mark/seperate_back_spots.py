@@ -9,7 +9,7 @@ image = cv2.imread(image_path)
 # Convert to HSV color space for more precise color filtering
 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-# Define color range for green (leaf color) in HSV space and adjust for better segmentation
+# Define color range for green (leaf color) in HSV space
 lower_green = np.array([20, 30, 30])  # Adjusted lower range
 upper_green = np.array([90, 255, 255])  # Adjusted upper range
 
@@ -40,15 +40,26 @@ if contours:
     pink_background_image = cv2.bitwise_and(background_pink, background_pink, mask=~mask_final)  # Pink outside leaf
     pink_background_image = cv2.add(pink_background_image, leaf_only_refined)  # Add the leaf region
 
+    # Convert the leaf-only image to grayscale for spot detection
+    leaf_gray = cv2.cvtColor(leaf_only_refined, cv2.COLOR_BGR2GRAY)
+
+    # Define threshold to isolate black spots within the leaf
+    _, black_region = cv2.threshold(leaf_gray, 50, 255, cv2.THRESH_BINARY_INV)
+
+    # Mask the black regions to keep only spots within the leaf area
+    black_in_leaf = cv2.bitwise_and(black_region, mask_final)
+
+    # Highlight black spots on the leaf in red for easy identification
+    highlighted_leaf = pink_background_image.copy()
+    highlighted_leaf[black_in_leaf == 255] = [255, 0, 0]  # Set black spots to red
+    
+    # Display the result with pink background and red spots
+    plt.figure(figsize=(10, 10))
+    plt.imshow(cv2.cvtColor(highlighted_leaf, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+    plt.title("Leaf with Pink Background and Black Spots Highlighted in Red")
+    plt.show()
+    plt.savefig("mark/seperate_spots_back.png")
+
 else:
-    pink_background_image = image  # If no leaf found, use original image
-
-cv2.imwrite("pink2.png", pink_background_image)
-
-# # Display the result with pink background
-# plt.figure(figsize=(10, 10))
-# plt.imshow(cv2.cvtColor(pink_background_image, cv2.COLOR_BGR2RGB))
-# plt.axis('off')
-# plt.title("Leaf with Pink Background")
-# plt.show()
-# plt.savefig("pink.png")
+    print("No leaf detected.")
