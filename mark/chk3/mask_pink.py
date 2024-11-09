@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Load the image and convert it to HSV color space
-image = cv2.imread("pink2.png")
+image = cv2.imread("pyfile/image_with_pink_background.png")
 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
 # Convert the specific BGR pink color (255, 182, 193) to HSV
