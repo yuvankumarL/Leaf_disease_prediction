@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Load the image
-image_path = 'final_v2/test/PotatoEarlyBlight4.JPG'
+image_path = 'final_v2/test/TomatoHealthy2.JPG'
 image = cv2.imread(image_path)
 
 # Convert to HSV color space for more precise color filtering
@@ -144,57 +144,178 @@ highlighted_image = np.copy(image)
 highlighted_image[blue_mask > 0] = red_color  # Replace blue pixels with red
 
 # Save and display the result
-cv2.imwrite("final_v2/images/highlighted_blue_pixels.png", highlighted_image) 
+cv2.imwrite("final_v2/images/highlighted_blue_pixels.png", blue_mask) 
 
 
-# from PIL import Image
-# import numpy as np
 
-# # Load the uploaded image to analyze
-# image_path = '/mnt/data/image.png'
-# image = Image.open(image_path)
+
+
+
+
+# Load the image
+image_path = 'final_v2/images/highlighted_leaf_spots.png'  # Replace with your image path
+image = cv2.imread(image_path)
+
+# Convert the image to HSV color space for more precise color filtering
+hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+# Define the blue color range in HSV space
+lower_blue = np.array([100, 150, 50])   # Lower bound for blue
+upper_blue = np.array([140, 255, 255])  # Upper bound for blue
+
+# Create a mask based on the blue color range
+mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)
+
+# Bitwise-AND the mask with the original image to extract only the blue regions
+blue_regions = cv2.bitwise_and(image, image, mask=mask_blue)
+
+# # Display the original image and the blue regions
+# cv2.imshow("Original Image", image)
+# cv2.imshow("Blue Regions", blue_regions)
+
+# Save the result if needed
+cv2.imwrite("final_v2/images/blue_regions.png", blue_regions)
 
 # Convert image to RGB array
-image_array = np.array(highlighted_image)
+image_array = np.array(blue_regions)
 
 # Define the target RGB value
-target_rgb = (0, 0, 255)
+target_rgb = (255, 0, 0)
 
 # Count the number of pixels that match the target color
 matching_pixels = np.sum(np.all(image_array == target_rgb, axis=-1))
 
 print(f"matching_pixels: {matching_pixels}")
 
-# print(image_array)
-
-# Saving the image array as 'image_array.npy'
-file_path = 'final_v2/image_array.npy'
-np.save(file_path, image_array)
-
+# Save it in a readable text format
 output_path = 'final_v2/image_array_readable.txt'
 np.savetxt(output_path, image_array.reshape(-1, image_array.shape[-1]), fmt='%d', delimiter=", ", header="R, G, B")
 
-# output_path
 
 
 
-import pandas as pd
+hsv = cv2.cvtColor(image_with_pink_background, cv2.COLOR_BGR2HSV)
 
-# # Load the image
-# image_path = '/mnt/data/image.png'
-image = highlighted_image
+# Convert the specific BGR pink color (255, 182, 193) to HSV
+pink_bgr = np.uint8([[[255, 182, 193]]])  # BGR color
+pink_hsv = cv2.cvtColor(pink_bgr, cv2.COLOR_BGR2HSV)[0][0]
 
-# Convert the image to HSV color space
-hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+# Define a narrow range around the HSV value of pink
+lower_pink = np.array([pink_hsv[0] - 10, 50, 50])   # Adjust as needed for tolerance
+upper_pink = np.array([pink_hsv[0] + 10, 255, 255])
 
-# Reshape the HSV image array into a 2D array (each row is a pixel with H, S, V values)
-hsv_reshaped = hsv_image.reshape(-1, 3)
+# Create a mask based on this specific pink color range
+mask_pink = cv2.inRange(hsv, lower_pink, upper_pink)
 
-# Create a DataFrame with columns for H, S, and V values
-hsv_df = pd.DataFrame(hsv_reshaped, columns=['H', 'S', 'V'])
+# Perform morphological operations to remove noise and fill gaps
+kernel = np.ones((5, 5), np.uint8)
+mask_cleaned = cv2.morphologyEx(mask_pink, cv2.MORPH_CLOSE, kernel)
+mask_cleaned = cv2.morphologyEx(mask_cleaned, cv2.MORPH_OPEN, kernel)
 
-# Save to a CSV file
-output_path = 'final_v2/hsv_values.csv'
-hsv_df.to_csv(output_path, index=False)
+# # Invert the mask to capture everything except the pink area
+# mask_background = cv2.bitwise_not(mask_cleaned)
 
-print(f"HSV values saved to {output_path}")
+# Save the mask_background as a PNG image with the same size as the original image
+cv2.imwrite("final/images/mask_cleaned.png", mask_cleaned)
+
+
+# blue = cv2.bitwise_or(pink_region, blue_regions)
+# cv2.imwrite("final_v2/images/blue.png", blue)
+
+# # Perform morphological operations to remove noise and fill gaps
+# kernel = np.ones((5, 5), np.uint8)
+# mask_cleaned = cv2.morphologyEx(mask_pink, cv2.MORPH_CLOSE, kernel)
+# mask_cleaned = cv2.morphologyEx(mask_cleaned, cv2.MORPH_OPEN, kernel)
+
+# # # Invert the mask to capture everything except the pink area
+# # mask_background = cv2.bitwise_not(mask_cleaned)
+
+# # Save the mask_background as a PNG image with the same size as the original image
+# cv2.imwrite("final_v2/images/mask_cleaned.png", mask_cleaned)
+
+
+
+
+
+
+# # Resize masks to match the shape of the blue_regions image
+# mask_cleaned_resized = cv2.resize(mask_cleaned, (blue_regions.shape[1], blue_regions.shape[0]))
+# # blue_mask_resized = cv2.resize(blue_mask, (blue_regions.shape[1], blue_regions.shape[0]))
+
+# # Perform bitwise AND operation with resized masks
+# blue_spots = cv2.bitwise_and(blue_regions, mask_cleaned_resized)
+# cv2.imwrite("final_v2/images/blue_spots.png", blue_spots)
+
+
+mask_cleaned_expanded = cv2.merge([mask_cleaned, mask_cleaned, mask_cleaned])
+blue_mask_expanded = cv2.merge([blue_mask, blue_mask, blue_mask])
+
+# Apply the bitwise operation with the expanded mask
+blue_spots = cv2.bitwise_xor(blue_regions, mask_cleaned_expanded)
+
+# If using just `mask_cleaned`, apply like this:
+#blue_spots = cv2.bitwise_and(blue_regions, mask_cleaned_expanded)
+cv2.imwrite("final_v2/images/blue_spots.png", blue_spots)
+
+total_pixels = blue_spots.size
+# white_pixels = np.sum(blue_spots == 255)
+# black_pixels = np.sum(blue_spots == 0)
+
+# # Print the results
+# print("Total number of pixels:", total_pixels)
+# print("Number of white pixels:", white_pixels)
+# print("Number of black pixels:", black_pixels)
+
+# left = (total_pixels-(white_pixels+black_pixels))
+# print(f"pixels of leaf without spots: {left}")
+# result = black_pixels / left * 100
+# print(f"Spot percentage: {result}")
+
+
+# Load the image
+image = blue_spots
+height, width = image.shape[:2]
+image_array = np.array(image)
+
+# Calculate the total number of pixels
+total_pixels = height * width
+
+# # Convert the image to HSV color space
+# hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+# # Define color ranges in HSV
+# # Blue color range
+# lower_blue = np.array([100, 150, 0])
+# upper_blue = np.array([140, 255, 255])
+
+# # White color range
+# lower_white = np.array([0, 0, 200])
+# upper_white = np.array([180, 30, 255])
+
+# # Black color range
+# lower_black = np.array([0, 0, 0])
+# upper_black = np.array([180, 255, 50])
+
+# # Create masks for each color
+# blue_mask = cv2.inRange(hsv, lower_blue, upper_blue)
+# white_mask = cv2.inRange(hsv, lower_white, upper_white)
+# black_mask = cv2.inRange(hsv, lower_black, upper_black)
+
+# # Count the number of non-zero pixels in each mask
+# num_blue_pixels = cv2.countNonZero(blue_mask)
+# num_white_pixels = cv2.countNonZero(white_mask)
+# num_black_pixels = cv2.countNonZero(black_mask)
+
+num_blue_pixels = np.sum(np.all(image_array == (255, 0, 0), axis=-1))
+num_black_pixels = np.sum(np.all(image_array == (255, 255, 255), axis=-1))
+num_white_pixels = np.sum(np.all(image_array == (0, 0, 0), axis=-1))
+
+print("Total Number of pixels:", total_pixels)
+print("Number of blue pixels:", num_blue_pixels)
+print("Number of white pixels:", num_white_pixels)
+print("Number of black pixels:", num_black_pixels)
+
+
+score = (num_blue_pixels / num_black_pixels) * 100
+
+print("disease affected score: ", score)
