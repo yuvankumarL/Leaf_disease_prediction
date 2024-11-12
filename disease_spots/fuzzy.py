@@ -70,6 +70,8 @@ def calculate_disease_percentage(binary_image, leaf_mask):
     disease_percentage = (diseased_pixels / leaf_pixels) * 100 if leaf_pixels > 0 else 0
     return disease_percentage
 
+
+
 # Define Fuzzy Logic System for Health Score
 def define_fuzzy_system():
     # Define fuzzy variables
@@ -122,14 +124,16 @@ def process_image_methods(image_path):
     for i, method in enumerate([method1, method2, method3, method4], start=1):
         binary_image = method(image, leaf_mask, os.path.join(output_dir, f'method{i}_result.jpg'))
             
-        if i == 4:    
-            disease_percentage = calculate_disease_percentage(binary_image, leaf_mask)
-            health_score = calculate_health_score(disease_percentage, health_sim)
+        # if i == 4:    
+        disease_percentage = calculate_disease_percentage(binary_image, leaf_mask)
+        health_score = calculate_health_score(disease_percentage, health_sim)
             
-            print(f"Method {i} - Disease Percentage: {disease_percentage:.2f}% | Health Score: {health_score:.2f}/100")
+        print(f"Method {i} - Disease Percentage: {disease_percentage:.2f}% | Health Score: {health_score:.2f}/100")
     
     print("Disease spot detection images and health scores calculated successfully for all methods.")
 
+    # xor = cv2.bitwise_xor()
+
 # Run the function with the path to your input image
 if __name__ == "__main__":
-    process_image_methods('final_v2/test/new_folder_2/test/TomatoEarlyBlight2.JPG')
+    process_image_methods('final_v2/test/AppleCedarRust4.JPG')

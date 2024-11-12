@@ -56,4 +56,4 @@ def process_image_methods(image_path):
     print("Disease spot detection images saved successfully for all methods.")
 
 # Run the function with the path to your input image
-process_image_methods('final_v2/test/new_folder_2/test/AppleCedarRust2.JPG')
+process_image_methods('final_v2/test/Tomato_early_blight.JPG')

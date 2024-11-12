@@ -116,3 +116,49 @@ score = (num_blue_pixels / num_black_pixels) * 100
 
 print("disease affected score: ", score)
 
+
+
+
+
+def define_fuzzy_system():
+    # Define fuzzy variables
+    disease_pct = ctrl.Antecedent(np.arange(0, 101, 1), 'disease_pct')
+    health_score = ctrl.Consequent(np.arange(0, 101, 1), 'health_score')
+    
+    # Define membership functions for disease_pct
+    disease_pct['low'] = fuzz.trimf(disease_pct.universe, [0, 0, 10])
+    disease_pct['medium'] = fuzz.trimf(disease_pct.universe, [10, 20, 30])
+    disease_pct['high'] = fuzz.trimf(disease_pct.universe, [30, 65, 100])
+    
+    # Define membership functions for health_score
+    health_score['poor'] = fuzz.trimf(health_score.universe, [0, 35, 70])
+    health_score['average'] = fuzz.trimf(health_score.universe, [70, 80, 90])
+    health_score['good'] = fuzz.trimf(health_score.universe, [90, 100, 100])
+    
+    # Define fuzzy rules
+    rule1 = ctrl.Rule(disease_pct['low'], health_score['good'])
+    rule2 = ctrl.Rule(disease_pct['medium'], health_score['average'])
+    rule3 = ctrl.Rule(disease_pct['high'], health_score['poor'])
+    
+    # Create control system and simulation
+    health_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
+    health_sim = ctrl.ControlSystemSimulation(health_ctrl)
+    
+    return health_sim
+
+# Calculate Health Score using Fuzzy Logic
+def calculate_health_score(disease_percentage, health_sim):
+    # Input the disease percentage
+    health_sim.input['disease_pct'] = disease_percentage
+    
+    # Perform the computation
+    health_sim.compute()
+    
+    # Get the output health score
+    return health_sim.output['health_score']
+
+
+
+health_score = calculate_health_score(disease_percentage, health_sim)
+            
+print(f"Method {i} - Disease Percentage: {disease_percentage:.2f}% | Health Score: {health_score:.2f}/100")

@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Load the image
-image_path = 'final_v2/test/TomatoEarlyBlight3.JPG'
+image_path = 'final_v2/test/new_folder_2/test/TomatoEarlyBlight2.JPG'
 image = cv2.imread(image_path)
 
 # Convert to HSV color space for more precise color filtering
