@@ -136,4 +136,4 @@ def process_image_methods(image_path):
 
 # Run the function with the path to your input image
 if __name__ == "__main__":
-    process_image_methods('final_v2/test/AppleCedarRust4.JPG')
+    process_image_methods('final_v4/remove_background.png')

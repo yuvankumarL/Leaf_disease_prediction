@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-image = cv2.imread("final_v2/test/new_folder_2/test/TomatoEarlyBlight2.JPG")
+image = cv2.imread("final_v2/test/TomatoEarlyBlight3.JPG")
 # Convert the image to
 #  HSV
 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)

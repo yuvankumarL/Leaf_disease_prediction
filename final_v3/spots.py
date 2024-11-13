@@ -76,7 +76,7 @@ from matplotlib import pyplot as plt
 # image_path = "final/images/pink.png"  # Replace with your image path
 # image = cv2.imread(image_path)
 
-image = cv2.imread("final_v2/test/AppleCedarRust4.JPG")
+image = cv2.imread("final_v4/pink_background.png")
 # Convert the image to HSV
 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 

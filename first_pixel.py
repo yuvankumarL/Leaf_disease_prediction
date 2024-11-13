@@ -1,7 +1,7 @@
 import cv2
 
 # Load the image
-image_path = "final_v2/test/new_folder_2/test/PotatoEarlyBlight1.JPG"  # Adjust this if needed
+image_path = "final_v5/highlighted_leaf_spots.png"  # Adjust this if needed
 image = cv2.imread(image_path)
 
 # Convert the image from BGR to RGB (OpenCV loads images in BGR format by default)
